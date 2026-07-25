@@ -4,35 +4,35 @@ import { Container, SectionTitle } from './ui';
 const FAQS = [
   {
     q: 'Are these products for human use?',
-    a: 'No. All products are sold strictly for laboratory and in vitro research use only. They are not for human or veterinary consumption, not dietary supplements, and not intended to diagnose, treat, cure, or prevent any disease.',
+    a: 'No. All products are sold strictly for laboratory and in vitro research use only. They are not for human or veterinary consumption, and not intended to diagnose, treat, cure, or prevent any disease.',
   },
   {
-    q: 'What is the difference between injectable, topical, and nasal items?',
-    a: 'These labels describe the research application form in the catalog. Injectable research items are typically lyophilized powders for lab reconstitution protocols. Topical items are intended for apply-on-skin research models. Nasal items support nasal research delivery models. None are for human use.',
-  },
-  {
-    q: 'How do I verify a batch serial?',
-    a: 'Open Test & verify in the top navigation, enter the serial printed on your vial or packaging, and we check it live against our database. Serials are managed in the admin dashboard.',
-  },
-  {
-    q: 'Can I send peptides to a lab for testing?',
-    a: 'Yes. On the Test & verify page you can find partner testing labs near you (location or ZIP), select a lab, and submit a request for HPLC purity, MS identity, and related assays. Our team follows up with shipping instructions.',
+    q: 'What do injectable, topical, and nasal mean?',
+    a: 'These labels describe the research form. Injectable items are typically lyophilized powders for lab reconstitution. Topical items are for apply-on-skin research models. Nasal items support nasal research delivery models. None are for human use.',
   },
   {
     q: 'What purity should I expect?',
-    a: 'Typical research lots target ≥98–99% purity with identity confirmation available for documentation. Always review the product specs on the store page for the listing you order.',
+    a: 'Typical lots target ≥98–99% purity. Always review the product page for the listing you order.',
   },
   {
-    q: 'Who can purchase from Vireon?',
-    a: 'Purchasers must be 21+ and buying for legitimate laboratory research purposes. You confirm this when entering the site and again at checkout.',
+    q: 'How do I verify a batch serial?',
+    a: 'Open Test & verify in the top navigation, enter the serial on your vial or packaging, and we check it against our lot records.',
   },
   {
-    q: 'How is inventory handled?',
-    a: 'Catalog stock comes from our live API and database. When a paid order completes, inventory is updated in real time — not from mock data.',
+    q: 'Can I send peptides to a lab for testing?',
+    a: 'Yes. On the Test & verify page you can find partner testing labs near you (location or ZIP), select a lab, and submit a request for HPLC purity, MS identity, and related assays.',
   },
   {
-    q: 'How do shipping and cold-chain work?',
-    a: 'Research compounds ship according to product requirements. For third-party testing requests, we provide packing and chain-of-custody guidance after your request is reviewed.',
+    q: 'Who can purchase from Vantril?',
+    a: 'Purchasers must be 21+ and buying for legitimate laboratory research. You confirm this when entering the site and at checkout. Creating an account helps you track orders and save shipping details.',
+  },
+  {
+    q: 'How do I track my order?',
+    a: 'Sign in to your researcher account to view order history. Guest checkouts receive confirmation by email with your order number.',
+  },
+  {
+    q: 'How does shipping work?',
+    a: 'Research compounds ship according to product requirements. After checkout, our team processes fulfillment for your shipping address.',
   },
 ];
 
@@ -48,7 +48,7 @@ export default function FaqSection() {
           </p>
           <SectionTitle>Frequently asked questions</SectionTitle>
           <p className="mx-auto mt-2 max-w-lg text-sm text-graphite-soft">
-            Quick answers about research use, product routes, verification, and testing.
+            Quick answers about research use, product forms, and ordering.
           </p>
         </div>
 
@@ -56,10 +56,7 @@ export default function FaqSection() {
           {FAQS.map((item, i) => {
             const isOpen = open === i;
             return (
-              <div
-                key={item.q}
-                className={i > 0 ? 'border-t border-paper-line' : ''}
-              >
+              <div key={item.q} className={i > 0 ? 'border-t border-paper-line' : ''}>
                 <button
                   type="button"
                   onClick={() => setOpen(isOpen ? -1 : i)}

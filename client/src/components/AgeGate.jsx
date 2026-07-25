@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button } from './ui';
+import { Button, LogoMark } from './ui';
 
 const KEY = 'vireon-age-gate';
 
@@ -36,8 +36,8 @@ export default function AgeGate() {
       <div className="animate-fade-up relative w-full max-w-md overflow-hidden rounded-3xl border border-white/20 bg-white p-8 text-center shadow-2xl shadow-ink/40">
         <div className="absolute inset-x-0 top-0 h-1.5 bg-animated-gradient" />
 
-        <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-animated-gradient font-display text-xl font-bold text-white shadow-lg shadow-teal/40">
-          V
+        <div className="mx-auto mb-5 flex justify-center">
+          <LogoMark className="h-14 w-12" />
         </div>
 
         <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-teal-deep">

@@ -59,7 +59,7 @@ Checkout uses **Stripe Payment Element** and **Address Element** (street autocom
 
 ### Local setup (Stripe CLI)
 
-Your CLI is already linked to the Vireon Stripe account. Keys are loaded into `server/.env` (gitignored):
+Your CLI is already linked to the Vantryl Stripe account. Keys are loaded into `server/.env` (gitignored):
 
 ```bash
 # Sync keys from Stripe CLI → server/.env

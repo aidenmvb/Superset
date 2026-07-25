@@ -1,126 +1,78 @@
 /**
- * Photorealistic product packaging by application route:
- *  - injectable → glass lyophilized vial
- *  - topical    → face serum dropper bottle
- *  - nasal      → nasal spray bottle
+ * Vantril product photography
+ *
+ * Home / Store cards → one consistent primary image per form (vial / serum / nasal)
+ * Product detail gallery → 5 different studio shots of that packaging type
  */
 
-const BASE = '/images/products';
+const BASE = '/images/products/branded';
 
-const VIAL = {
-  lavender: `${BASE}/vial-lavender.jpg`,
-  indigo: `${BASE}/vial-indigo.jpg`,
-  rose: `${BASE}/vial-rose.jpg`,
-  violet: `${BASE}/vial-violet.jpg`,
-  amber: `${BASE}/vial-amber.jpg`,
+/** Same image for every injectable on home + store */
+const PRIMARY = {
+  injectable: `${BASE}/primary-vial.jpg`,
+  topical: `${BASE}/primary-serum.jpg`,
+  nasal: `${BASE}/primary-nasal.jpg`,
 };
 
-/** Face / topical serum dropper bottles */
-const SERUM = {
-  violet: `${BASE}/dropper-violet.jpg`,
-  rose: `${BASE}/dropper-rose.jpg`,
+/** Distinct gallery shots (detail page only) */
+const GALLERY = {
+  injectable: [
+    `${BASE}/vial-01-front.jpg`,
+    `${BASE}/vial-02-angle.jpg`,
+    `${BASE}/vial-03-closeup.jpg`,
+    `${BASE}/vial-04-low.jpg`,
+    `${BASE}/vial-05-high.jpg`,
+  ],
+  topical: [
+    `${BASE}/serum-01-front.jpg`,
+    `${BASE}/serum-02-pair.jpg`,
+    `${BASE}/serum-03-diagonal.jpg`,
+    `${BASE}/serum-04-upright.jpg`,
+    `${BASE}/serum-05-wrap.jpg`,
+  ],
+  nasal: [
+    `${BASE}/nasal-01-front.jpg`,
+    `${BASE}/nasal-02-angle.jpg`,
+    `${BASE}/nasal-03-closeup.jpg`,
+    `${BASE}/nasal-04-front.jpg`,
+    `${BASE}/nasal-05-pair.jpg`,
+  ],
 };
 
-/** Nasal spray bottles */
-const NASAL = {
-  blue: `${BASE}/nasal-blue.jpg`,
-  violet: `${BASE}/nasal-violet.jpg`,
-};
-
-function hashSlug(slug) {
-  const s = String(slug || '');
-  let h = 0;
-  for (let i = 0; i < s.length; i += 1) {
-    h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  }
-  return h;
-}
-
-/** Explicit packaging photo per product */
-const BY_SLUG = {
-  // Injectable research — glass lyophilized vials
-  'bpc-157': VIAL.indigo,
-  'tb-500': VIAL.violet,
-  'cjc-1295-no-dac': VIAL.violet,
-  ipamorelin: VIAL.lavender,
-  semaglutide: VIAL.rose,
-  tirzepatide: VIAL.rose,
-  'mots-c': VIAL.amber,
-  epithalon: VIAL.lavender,
-  'melanotan-ii': VIAL.violet,
-
-  // Topical / face apply — serum dropper bottles
-  'ghk-cu': SERUM.violet,
-  'ghk-cu-serum': SERUM.violet,
-  argireline: SERUM.violet,
-  'matrixyl-3000': SERUM.rose,
-  'snap-8': SERUM.rose,
-
-  // Nasal research — nasal spray bottles
-  selank: NASAL.blue,
-  semax: NASAL.blue,
-  'semax-nasal-kit': NASAL.blue,
-  'selank-nasal-kit': NASAL.violet,
-  'oxytocin-nasal': NASAL.violet,
-  'dihexa-nasal': NASAL.violet,
-};
-
-function pickByRoute(product) {
+function routeKey(product) {
   const route = String(product?.applicationRoute || 'injectable').toLowerCase();
-  const c = String(product?.imageColor || '').toLowerCase();
-  const slug = product?.slug || '';
-
-  if (route === 'topical') {
-    // warmer / coral accents → rose serum; otherwise violet serum
-    if (c.includes('f4') || c.includes('e1') || c.includes('db') || c.includes('ea') || c.includes('f5')) {
-      return SERUM.rose;
-    }
-    if (slug) {
-      return [SERUM.violet, SERUM.rose][hashSlug(slug) % 2];
-    }
-    return SERUM.violet;
-  }
-
-  if (route === 'nasal') {
-    if (c.includes('a8') || c.includes('8b') || c.includes('63') || c.includes('93')) {
-      return NASAL.violet;
-    }
-    if (slug) {
-      return [NASAL.blue, NASAL.violet][hashSlug(slug) % 2];
-    }
-    return NASAL.blue;
-  }
-
-  // injectable vials
-  if (c.includes('db') || c.includes('e1') || c.includes('f4')) return VIAL.rose;
-  if (c.includes('ea') || c.includes('f5') || c.includes('f59')) return VIAL.amber;
-  if (c.includes('93') || c.includes('7c') || c.includes('8b') || c.includes('a8')) return VIAL.violet;
-  if (c.includes('4f') || c.includes('37') || c.includes('2563') || c.includes('1d4e')) return VIAL.indigo;
-  if (slug) {
-    const list = Object.values(VIAL);
-    return list[hashSlug(slug) % list.length];
-  }
-  return VIAL.lavender;
+  if (route === 'topical') return 'topical';
+  if (route === 'nasal') return 'nasal';
+  return 'injectable';
 }
 
-/**
- * Resolve packaging photo for a product from the live API.
- */
+/** Home / store / cart: identical primary shot per packaging type */
 export function getProductImage(product) {
-  if (!product) return VIAL.lavender;
+  if (!product) return PRIMARY.injectable;
   if (product.imageUrl) return product.imageUrl;
-  if (product.slug && BY_SLUG[product.slug]) return BY_SLUG[product.slug];
-  return pickByRoute(product);
+  return PRIMARY[routeKey(product)];
 }
 
-export function getProductImageAlt(product) {
+/** Product page only: five different photos of that packaging type */
+export function getProductGallery(product) {
+  const key = routeKey(product);
+  const shots = GALLERY[key] || GALLERY.injectable;
+  // Always 5 unique files; front shot matches the store primary
+  return shots.slice(0, 5);
+}
+
+export function getProductImageAlt(product, index = 0) {
   const name = product?.name || 'Research peptide';
-  const route = String(product?.applicationRoute || 'injectable').toLowerCase();
-  if (route === 'topical') {
-    return `${name} — topical face serum dropper bottle for laboratory research`;
-  }
-  if (route === 'nasal') {
-    return `${name} — nasal research spray bottle`;
-  }
-  return `${name} — clear glass research vial with lyophilized powder`;
+  const key = routeKey(product);
+  const views = [
+    'front packaging',
+    'three-quarter angle',
+    'label close-up',
+    'studio angle',
+    'alternate view',
+  ];
+  const view = views[index] || `view ${index + 1}`;
+  if (key === 'topical') return `${name} — Vantril topical serum, ${view}`;
+  if (key === 'nasal') return `${name} — Vantril nasal spray, ${view}`;
+  return `${name} — Vantril research vial, ${view}`;
 }

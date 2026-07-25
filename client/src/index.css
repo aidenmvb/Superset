@@ -3,6 +3,8 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-logo: "Space Grotesk", "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-electric: "Syne", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Bold indigo + coral palette (replaces teal/green) */
@@ -65,6 +67,14 @@
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
+  }
+
+  .font-logo {
+    font-family: var(--font-logo);
+  }
+
+  .font-electric {
+    font-family: var(--font-electric);
   }
 }
 
@@ -139,6 +149,62 @@
   }
   50% {
     transform: translateY(-8px) rotate(1.2deg);
+  }
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes hero-glow-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes form-section-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.45);
+  }
+  40% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0.12);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@keyframes hotspot-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes hint-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.9;
   }
 }
 
@@ -227,6 +293,44 @@
   transform-origin: bottom center;
 }
 
+.animate-hero-float {
+  animation: hero-float 5.5s ease-in-out infinite;
+}
+
+.animate-hero-float-delay {
+  animation: hero-float 6.2s ease-in-out 0.45s infinite;
+}
+
+.animate-hero-float-delay-2 {
+  animation: hero-float 5.8s ease-in-out 0.9s infinite;
+}
+
+.animate-hero-glow {
+  animation: hero-glow-breathe 4.5s ease-in-out infinite;
+}
+
+.animate-hotspot-breathe {
+  animation: hotspot-breathe 3.2s ease-in-out infinite;
+}
+
+.animate-hint-pulse {
+  animation: hint-pulse 2.8s ease-in-out infinite;
+}
+
+/* Sibling dim when one form is active — premium product stage */
+.hero-form-stage:has(.hero-form:hover) .hero-form:not(:hover),
+.hero-form-stage:has(.hero-form:focus-visible) .hero-form:not(:focus-visible) {
+  opacity: 0.48;
+  filter: saturate(0.75) brightness(0.82);
+  transform: scale(0.96);
+}
+
+.form-section-glow {
+  animation: form-section-pulse 1.4s ease-out 1;
+  border-radius: 1rem;
+  outline: 1px solid rgba(79, 70, 229, 0.35);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
   .animate-float-slow,
@@ -236,7 +340,18 @@
   .promo-shimmer,
   .animate-vial-float,
   .animate-vial-shine,
-  .animate-liquid-sway {
+  .animate-liquid-sway,
+  .animate-hero-float,
+  .animate-hero-float-delay,
+  .animate-hero-float-delay-2,
+  .animate-hero-glow,
+  .animate-hotspot-breathe,
+  .animate-hint-pulse {
     animation: none !important;
+  }
+
+  .hero-form-stage:has(.hero-form:hover) .hero-form:not(:hover),
+  .hero-form-stage:has(.hero-form:focus-visible) .hero-form:not(:focus-visible) {
+    transform: none;
   }
 }

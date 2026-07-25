@@ -82,6 +82,7 @@ export function mapOrder(order, items = null) {
     shipping: order.shipping_cents / 100,
     total: order.total_cents / 100,
     researchUseAck: Boolean(order.research_use_ack),
+    userId: order.user_id || null,
     createdAt: order.created_at,
   };
 
@@ -133,6 +134,7 @@ export function createPaidOrder({
   paymentIntentId,
   paymentStatus = 'paid',
   status = 'paid',
+  userId = null,
 }) {
   const existing = findOrderByPaymentIntent(paymentIntentId);
   if (existing) {
@@ -155,12 +157,12 @@ export function createPaidOrder({
       order_number, customer_name, customer_email, customer_phone,
       shipping_address, shipping_city, shipping_state, shipping_zip,
       shipping_country, notes, status, payment_status, stripe_payment_intent_id,
-      subtotal_cents, shipping_cents, total_cents, research_use_ack
+      subtotal_cents, shipping_cents, total_cents, research_use_ack, user_id
     ) VALUES (
       @order_number, @customer_name, @customer_email, @customer_phone,
       @shipping_address, @shipping_city, @shipping_state, @shipping_zip,
       @shipping_country, @notes, @status, @payment_status, @stripe_payment_intent_id,
-      @subtotal_cents, @shipping_cents, @total_cents, 1
+      @subtotal_cents, @shipping_cents, @total_cents, 1, @user_id
     )
   `);
 
@@ -197,6 +199,7 @@ export function createPaidOrder({
       shipping_state: shippingState.trim(),
       shipping_zip: shippingZip.trim(),
       shipping_country: (shippingCountry || 'US').trim(),
+      user_id: userId ? Number(userId) : null,
       notes: notes?.trim() || null,
       status,
       payment_status: paymentStatus,

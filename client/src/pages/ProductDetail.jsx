@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { getProduct } from '../api';
 import { useCart } from '../cartContext';
 import { formatMoney } from '../format';
-import ProductPhoto from '../components/ProductPhoto';
+import ProductGallery from '../components/ProductGallery';
 import {
   Alert,
   Button,
@@ -86,6 +86,13 @@ export default function ProductDetail() {
     ['Sequence', product.sequence || '—'],
   ];
 
+  const formLabel =
+    product.applicationRoute === 'topical'
+      ? 'Topical'
+      : product.applicationRoute === 'nasal'
+        ? 'Nasal'
+        : 'Injectable';
+
   return (
     <Section className="pb-20 pt-8">
       <Container>
@@ -96,58 +103,60 @@ export default function ProductDetail() {
           ← Back to store
         </Link>
         <div className="grid gap-10 lg:grid-cols-2">
-          <div className="relative overflow-hidden rounded-3xl border border-paper-line shadow-sm">
-            <ProductPhoto product={product} size="lg" showCaption={false} />
-            <div className="absolute bottom-5 left-4 right-4 z-10 flex flex-wrap justify-center gap-2">
-              <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-ink shadow-sm ring-1 ring-paper-line backdrop-blur">
-                {product.vialSize}
-              </span>
-              <span className="rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-ink shadow-sm ring-1 ring-paper-line backdrop-blur">
-                {product.purity} purity
-              </span>
-              <span className="rounded-full bg-ink/85 px-3 py-1 text-xs font-semibold text-white shadow-sm backdrop-blur">
-                As shipped to lab
-              </span>
-            </div>
-          </div>
+          <ProductGallery product={product} />
 
           <div>
             <div className="mb-3 flex flex-wrap gap-2">
-              <Pill>{product.categoryName}</Pill>
-              <Pill muted>{product.form}</Pill>
-              {product.applicationLabel && (
-                <Pill
-                  className={
-                    product.applicationRoute === 'topical'
-                      ? 'bg-violet text-white'
-                      : product.applicationRoute === 'nasal'
-                        ? 'bg-teal-deep text-white'
-                        : 'bg-ink text-white'
-                  }
-                >
-                  {product.applicationLabel}
-                </Pill>
-              )}
+              <Pill>{formLabel}</Pill>
+              <Pill muted>{product.vialSize}</Pill>
+              {product.purity && <Pill muted>{product.purity}</Pill>}
             </div>
             <PageTitle>{product.name}</PageTitle>
-            <Lead className="mb-4">{product.shortDescription}</Lead>
-            <div className="mb-5 flex flex-wrap items-end justify-between gap-3 rounded-2xl border border-paper-line bg-white p-4">
-              <div>
-                <div className="font-display text-3xl font-semibold text-ink">
-                  {formatMoney(product.price)}
+            {product.shortDescription && (
+              <Lead className="mb-4">{product.shortDescription}</Lead>
+            )}
+
+            {/* Buy block first */}
+            <div className="mb-6 rounded-2xl border border-paper-line bg-white p-5 shadow-sm">
+              <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                <div>
+                  <div className="font-display text-3xl font-semibold text-ink">
+                    {formatMoney(product.price)}
+                  </div>
+                  <div className="text-sm text-graphite-soft">{product.vialSize}</div>
                 </div>
-                <div className="text-sm text-graphite-soft">{product.vialSize}</div>
+                <span
+                  className={
+                    product.inStock
+                      ? 'text-sm font-semibold text-teal-deep'
+                      : 'text-sm font-semibold text-vireon-red'
+                  }
+                >
+                  {product.inStock ? 'In stock' : 'Out of stock'}
+                </span>
               </div>
-              <span
-                className={
-                  product.inStock
-                    ? 'text-sm font-semibold text-teal-deep'
-                    : 'text-sm font-semibold text-vireon-red'
-                }
-              >
-                {product.inStock ? `${product.stock} in stock` : 'Out of stock'}
-              </span>
+              <div className="flex flex-wrap items-end gap-3">
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-xs font-medium text-graphite-soft">Qty</span>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={product.stock}
+                    value={qty}
+                    disabled={!product.inStock}
+                    onChange={(e) => setQty(Number(e.target.value) || 1)}
+                    className="w-24"
+                  />
+                </label>
+                <Button type="button" disabled={!product.inStock} onClick={handleAdd}>
+                  {added ? 'Added to cart' : 'Add to cart'}
+                </Button>
+              </div>
+              <p className="mt-3 text-xs text-graphite-soft">
+                Research use only. Not for human or animal consumption.
+              </p>
             </div>
+
             <div className="mb-6 rounded-2xl border border-paper-line bg-paper-dim/60 p-4">
               <h2 className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-teal-deep">
                 About this compound
@@ -155,7 +164,7 @@ export default function ProductDetail() {
               <p className="text-sm leading-relaxed text-graphite">{product.description}</p>
             </div>
 
-            <div className="mb-6 overflow-hidden rounded-2xl border border-paper-line bg-white">
+            <div className="overflow-hidden rounded-2xl border border-paper-line bg-white">
               {specs.map(([label, value]) => (
                 <div
                   key={label}
@@ -168,27 +177,6 @@ export default function ProductDetail() {
                 </div>
               ))}
             </div>
-
-            <div className="mb-4 flex flex-wrap items-end gap-3">
-              <label className="flex flex-col gap-1.5 text-xs font-medium text-graphite-soft">
-                Qty
-                <Input
-                  type="number"
-                  min={1}
-                  max={product.stock}
-                  value={qty}
-                  disabled={!product.inStock}
-                  onChange={(e) => setQty(Number(e.target.value) || 1)}
-                  className="w-24"
-                />
-              </label>
-              <Button type="button" disabled={!product.inStock} onClick={handleAdd}>
-                {added ? 'Added to cart' : 'Add to cart'}
-              </Button>
-            </div>
-            <p className="text-xs text-graphite-soft">
-              Research use only. Not for human or animal consumption.
-            </p>
           </div>
         </div>
       </Container>

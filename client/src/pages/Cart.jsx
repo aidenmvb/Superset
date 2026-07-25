@@ -23,8 +23,8 @@ export default function Cart() {
       <Section>
         <Container className="max-w-2xl">
           <PageTitle>Your cart is empty</PageTitle>
-          <Lead className="mb-6">Browse the live catalog and add research compounds.</Lead>
-          <ButtonLink to="/catalog">Browse catalog</ButtonLink>
+          <Lead className="mb-6">Add research compounds from the store to get started.</Lead>
+          <ButtonLink to="/catalog">Shop the store</ButtonLink>
         </Container>
       </Section>
     );

@@ -16,13 +16,107 @@ async function request(path, options = {}) {
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const message = data.error || data.details?.join?.(', ') || `Request failed (${res.status})`;
+    const details = Array.isArray(data.details) ? data.details : undefined;
+    const message =
+      (details && details.length ? details.join('. ') : null) ||
+      data.error ||
+      (res.status >= 500
+        ? 'Something went wrong. Please try again in a moment.'
+        : `Request failed (${res.status})`);
     const err = new Error(message);
     err.status = res.status;
-    err.details = data.details;
+    err.details = details;
     throw err;
   }
   return data;
+}
+
+function userHeaders(token) {
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export function authRegister(payload) {
+  return request('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function authLogin(email, password) {
+  return request('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
+  });
+}
+
+export function authLogout(token) {
+  return request('/api/auth/logout', {
+    method: 'POST',
+    headers: userHeaders(token),
+  });
+}
+
+export function authMe(token) {
+  return request('/api/auth/me', {
+    headers: userHeaders(token),
+  });
+}
+
+export function authUpdateMe(token, payload) {
+  return request('/api/auth/me', {
+    method: 'PATCH',
+    headers: userHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export function authChangePassword(token, currentPassword, newPassword) {
+  return request('/api/auth/change-password', {
+    method: 'POST',
+    headers: userHeaders(token),
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+}
+
+export function getAccountOrders(token) {
+  return request('/api/account/orders', {
+    headers: userHeaders(token),
+  });
+}
+
+export function getAccountOrder(token, orderNumber) {
+  return request(`/api/account/orders/${encodeURIComponent(orderNumber)}`, {
+    headers: userHeaders(token),
+  });
+}
+
+export function getAccountAddresses(token) {
+  return request('/api/account/addresses', {
+    headers: userHeaders(token),
+  });
+}
+
+export function createAccountAddress(token, payload) {
+  return request('/api/account/addresses', {
+    method: 'POST',
+    headers: userHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateAccountAddress(token, id, payload) {
+  return request(`/api/account/addresses/${id}`, {
+    method: 'PATCH',
+    headers: userHeaders(token),
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteAccountAddress(token, id) {
+  return request(`/api/account/addresses/${id}`, {
+    method: 'DELETE',
+    headers: userHeaders(token),
+  });
 }
 
 export function getHealth() {
@@ -82,15 +176,19 @@ export function getCategories() {
   return request('/api/categories');
 }
 
-export function createOrder(payload) {
+export function createOrder(payload, token) {
   return request('/api/orders', {
     method: 'POST',
+    headers: userHeaders(token),
     body: JSON.stringify(payload),
   });
 }
 
-export function getOrder(orderNumber) {
-  return request(`/api/orders/${encodeURIComponent(orderNumber)}`);
+export function getOrder(orderNumber, { email, token } = {}) {
+  const qs = email ? `?email=${encodeURIComponent(email)}` : '';
+  return request(`/api/orders/${encodeURIComponent(orderNumber)}${qs}`, {
+    headers: userHeaders(token),
+  });
 }
 
 export function submitContact(payload) {

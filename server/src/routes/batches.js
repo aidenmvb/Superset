@@ -54,7 +54,7 @@ function verifySerial(serialRaw, res) {
 
   return res.json({
     valid: true,
-    message: 'Serial verified. This batch is registered in the Vireon system.',
+    message: 'Serial verified. This batch is registered in the Vantril system.',
     batch: mapSerialRow(updated),
   });
 }

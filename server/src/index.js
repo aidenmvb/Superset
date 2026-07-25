@@ -17,6 +17,8 @@ import webhooksRouter from './routes/webhooks.js';
 import batchesRouter from './routes/batches.js';
 import adminRouter from './routes/admin.js';
 import labsRouter from './routes/labs.js';
+import authRouter from './routes/auth.js';
+import accountRouter from './routes/account.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -103,6 +105,8 @@ app.use('/api/payments', paymentsRouter);
 app.use('/api/batches', batchesRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/labs', labsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/account', accountRouter);
 
 // Serve React production build (same origin as API on Cloud Run)
 const clientDist = process.env.CLIENT_DIST || path.join(__dirname, '../../client/dist');

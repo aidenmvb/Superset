@@ -149,7 +149,7 @@ router.get('/geocode', async (req, res) => {
     const url = `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(zip5)}&country=US&format=json&limit=1`;
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'VireonResearchStore/1.0 (peptide testing lab finder)',
+        'User-Agent': 'VantrilResearchStore/1.0 (peptide testing lab finder)',
         Accept: 'application/json',
       },
     });

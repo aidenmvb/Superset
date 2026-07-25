@@ -3,9 +3,7 @@ import { submitContact } from '../api';
 import {
   Alert,
   Button,
-  Card,
   Container,
-  Eyebrow,
   Input,
   Label,
   Lead,
@@ -14,15 +12,13 @@ import {
   Textarea,
 } from '../components/ui';
 
-const initial = { name: '', email: '', subject: '', message: '' };
-
 export default function Contact() {
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState({ type: '', text: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  function update(field, value) {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  function update(field) {
+    return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
   }
 
   async function onSubmit(e) {
@@ -30,72 +26,60 @@ export default function Contact() {
     setSubmitting(true);
     setStatus({ type: '', text: '' });
     try {
-      const res = await submitContact(form);
-      setStatus({ type: 'success', text: res.message });
-      setForm(initial);
+      await submitContact(form);
+      setStatus({ type: 'ok', text: 'Message sent. We will get back to you soon.' });
+      setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
-      setStatus({
-        type: 'error',
-        text: err.details?.join('. ') || err.message || 'Failed to send message',
-      });
+      setStatus({ type: 'err', text: err.message || 'Could not send message.' });
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <Section>
-      <Container className="grid items-start gap-10 lg:grid-cols-2">
+    <Section className="pb-20 pt-10">
+      <Container className="grid gap-10 lg:grid-cols-2">
         <div>
-          <Eyebrow>CONTACT</Eyebrow>
-          <PageTitle>Talk to the research desk</PageTitle>
+          <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-teal-deep">Contact</p>
+          <PageTitle>Talk with support</PageTitle>
           <Lead className="mb-6">
-            Questions about COAs, bulk quotes, or shipping? Messages are stored in the backend
-            database via <code>POST /api/contact</code>.
+            Questions about products, orders, or shipping? Send a message and our team will respond.
           </Lead>
-          <ul className="list-disc space-y-2 pl-5 text-graphite-soft">
-            <li>Email: research@vireon.example</li>
-            <li>Hours: Mon–Fri, 9am–5pm PT</li>
-            <li>COA requests: include product name and lot preference</li>
+          <ul className="space-y-2 text-sm text-graphite-soft">
+            <li>Orders & shipping: include your order number when possible</li>
+            <li>Product specs: reference the product name on the store page</li>
+            <li>Account help: use the email on your researcher account</li>
           </ul>
         </div>
 
-        <Card className="grid gap-4 p-6">
-          <form className="grid gap-4" onSubmit={onSubmit}>
-            {status.text && (
-              <Alert variant={status.type === 'success' ? 'success' : 'error'}>{status.text}</Alert>
-            )}
+        <form onSubmit={onSubmit} className="rounded-2xl border border-paper-line bg-white p-6 shadow-sm">
+          {status.text && (
+            <Alert className="mb-4" variant={status.type === 'ok' ? 'success' : undefined}>
+              {status.text}
+            </Alert>
+          )}
+          <div className="mb-4 grid gap-4 sm:grid-cols-2">
             <Label>
-              Name *
-              <Input required value={form.name} onChange={(e) => update('name', e.target.value)} />
+              Name
+              <Input value={form.name} onChange={update('name')} required />
             </Label>
             <Label>
-              Email *
-              <Input
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => update('email', e.target.value)}
-              />
+              Email
+              <Input type="email" value={form.email} onChange={update('email')} required />
             </Label>
-            <Label>
-              Subject
-              <Input value={form.subject} onChange={(e) => update('subject', e.target.value)} />
-            </Label>
-            <Label>
-              Message *
-              <Textarea
-                required
-                rows={5}
-                value={form.message}
-                onChange={(e) => update('message', e.target.value)}
-              />
-            </Label>
-            <Button type="submit" disabled={submitting}>
-              {submitting ? 'Sending…' : 'Send message'}
-            </Button>
-          </form>
-        </Card>
+          </div>
+          <Label className="mb-4">
+            Subject
+            <Input value={form.subject} onChange={update('subject')} />
+          </Label>
+          <Label className="mb-5">
+            Message
+            <Textarea value={form.message} onChange={update('message')} rows={5} required />
+          </Label>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? 'Sending…' : 'Send message'}
+          </Button>
+        </form>
       </Container>
     </Section>
   );

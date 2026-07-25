@@ -173,11 +173,50 @@ export function initSchema() {
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (lab_id) REFERENCES testing_labs(id)
     );
+
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT NOT NULL UNIQUE COLLATE NOCASE,
+      password_hash TEXT NOT NULL,
+      name TEXT NOT NULL DEFAULT '',
+      phone TEXT NOT NULL DEFAULT '',
+      org_name TEXT NOT NULL DEFAULT '',
+      research_use_ack INTEGER NOT NULL DEFAULT 0,
+      age_confirmed INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS user_sessions (
+      token TEXT PRIMARY KEY,
+      user_id INTEGER NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS user_addresses (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      label TEXT NOT NULL DEFAULT 'Shipping',
+      name TEXT NOT NULL DEFAULT '',
+      line1 TEXT NOT NULL,
+      line2 TEXT NOT NULL DEFAULT '',
+      city TEXT NOT NULL,
+      state TEXT NOT NULL,
+      zip TEXT NOT NULL,
+      country TEXT NOT NULL DEFAULT 'US',
+      is_default INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
   `);
 
   // Migrate DBs created before payment columns existed
   ensureColumn('orders', 'payment_status', "TEXT NOT NULL DEFAULT 'unpaid'");
   ensureColumn('orders', 'stripe_payment_intent_id', 'TEXT');
+  ensureColumn('orders', 'user_id', 'INTEGER');
   ensureColumn('products', 'application_route', "TEXT NOT NULL DEFAULT 'injectable'");
 
   db.exec(`
@@ -190,6 +229,12 @@ export function initSchema() {
       ON products(application_route);
     CREATE INDEX IF NOT EXISTS idx_testing_labs_state_city
       ON testing_labs(state, city);
+    CREATE INDEX IF NOT EXISTS idx_user_sessions_user
+      ON user_sessions(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_addresses_user
+      ON user_addresses(user_id);
+    CREATE INDEX IF NOT EXISTS idx_orders_user
+      ON orders(user_id);
   `);
 }
 
