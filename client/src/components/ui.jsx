@@ -229,8 +229,8 @@ export function Muted({ className, children }) {
   return <p className={cn('text-sm text-graphite-soft', className)}>{children}</p>;
 }
 
-export function LoadingText({ children = 'Loading…' }) {
-  return <p className="text-sm text-graphite-soft">{children}</p>;
+export function LoadingText({ children = 'Loading…', className }) {
+  return <p className={cn('text-sm text-white/50', className)}>{children}</p>;
 }
 
 export function SummaryRow({ label, value, strong, className }) {

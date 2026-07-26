@@ -26,30 +26,28 @@ export default function Layout() {
   }, [isHome]);
 
   const overlay = isHome && !heroPast;
+  // Site-wide dark chrome — matches homepage canvas
+  const darkChrome = true;
 
   const navClass = ({ isActive }) =>
     cn(
       'inline-flex items-center justify-center rounded-full border px-3.5 py-2 text-sm font-semibold shadow-sm transition active:scale-[0.98]',
-      overlay
-        ? isActive
-          ? 'border-white/40 bg-white text-ink shadow-black/20'
-          : 'border-white/20 bg-white/10 text-white backdrop-blur-sm hover:border-white/40 hover:bg-white/20'
-        : isActive
-          ? 'border-teal/40 bg-gradient-to-r from-teal to-violet text-white shadow-teal/20 ring-2 ring-teal/20'
-          : 'border-paper-line bg-white text-graphite hover:border-teal/35 hover:bg-mint hover:text-teal-deep hover:shadow-md'
+      isActive
+        ? 'border-white/40 bg-white text-ink shadow-black/20'
+        : 'border-white/20 bg-white/10 text-white backdrop-blur-sm hover:border-white/40 hover:bg-white/20'
     );
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-ink text-white">
       <AgeGate />
 
-      {/* Promo strip sits under the hero chrome on home so the first screen is pure brand. */}
+      {/* Promo strip off home only — still dark-friendly */}
       {!isHome && (
-        <div className="promo-shimmer px-4 py-2.5 text-center text-xs font-semibold tracking-wide text-white sm:text-[13px]">
+        <div className="border-b border-white/10 bg-ink-soft/80 px-4 py-2.5 text-center text-xs font-semibold tracking-wide text-white/80 sm:text-[13px]">
           Research use only · High purity ·{' '}
           <Link
             to="/verify"
-            className="underline decoration-white/70 underline-offset-2 hover:decoration-white"
+            className="text-white underline decoration-white/50 underline-offset-2 hover:decoration-white"
           >
             Test & verify
           </Link>
@@ -62,23 +60,16 @@ export default function Layout() {
           isHome ? 'fixed inset-x-0 top-0' : 'sticky top-0',
           overlay
             ? 'border-b border-transparent bg-gradient-to-b from-ink/55 via-ink/25 to-transparent'
-            : 'border-b border-paper-line/80 bg-white/95 backdrop-blur-md'
+            : 'border-b border-white/10 bg-ink/90 backdrop-blur-md'
         )}
       >
         <Container wide>
           <nav className="flex h-14 items-center justify-between gap-3 sm:h-16 sm:gap-4">
             <Link to="/" className="shrink-0">
-              <Logo light={overlay} />
+              <Logo light />
             </Link>
 
-            <div
-              className={cn(
-                'hidden items-center gap-2 rounded-full p-1.5 md:flex',
-                overlay
-                  ? 'border border-white/15 bg-white/5 backdrop-blur-md'
-                  : 'border border-paper-line bg-paper-dim/80'
-              )}
-            >
+            <div className="hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 p-1.5 backdrop-blur-md md:flex">
               <NavLink to="/catalog" className={navClass}>
                 Store
               </NavLink>
@@ -107,22 +98,14 @@ export default function Layout() {
                 <div className="hidden items-center gap-2 sm:flex">
                   <Link
                     to="/account"
-                    className={cn(
-                      'rounded-full border px-3.5 py-2 text-xs font-semibold transition',
-                      overlay
-                        ? 'border-white/25 bg-white/10 text-white hover:bg-white/20'
-                        : 'border-paper-line bg-white text-ink hover:border-teal/40 hover:bg-mint'
-                    )}
+                    className="rounded-full border border-white/25 bg-white/10 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-white/20"
                   >
                     {user?.name?.split(' ')[0] || 'Account'}
                   </Link>
                   <button
                     type="button"
                     onClick={() => logout()}
-                    className={cn(
-                      'rounded-full px-2 py-2 text-xs font-semibold',
-                      overlay ? 'text-white/70 hover:text-white' : 'text-graphite-soft hover:text-ink'
-                    )}
+                    className="rounded-full px-2 py-2 text-xs font-semibold text-white/70 hover:text-white"
                   >
                     Log out
                   </button>
@@ -130,24 +113,14 @@ export default function Layout() {
               ) : (
                 <Link
                   to="/account/login"
-                  className={cn(
-                    'hidden rounded-full border px-3.5 py-2 text-xs font-semibold transition sm:inline-flex',
-                    overlay
-                      ? 'border-white/25 bg-white/10 text-white hover:bg-white/20'
-                      : 'border-paper-line bg-white text-ink hover:border-teal/40 hover:bg-mint'
-                  )}
+                  className="hidden rounded-full border border-white/25 bg-white/10 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-white/20 sm:inline-flex"
                 >
                   Sign in
                 </Link>
               )}
               <Link
                 to="/cart"
-                className={cn(
-                  'relative inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-sm transition active:scale-[0.98]',
-                  overlay
-                    ? 'border-white/25 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20'
-                    : 'border-paper-line bg-white text-ink hover:border-teal/40 hover:bg-mint hover:shadow-md'
-                )}
+                className="relative inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-xs font-semibold text-white shadow-sm backdrop-blur-sm transition hover:bg-white/20 active:scale-[0.98]"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -181,51 +154,53 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      <footer className="mt-auto border-t border-paper-line bg-white">
+      <footer className="mt-auto border-t border-white/10 bg-ink text-white">
         <Container wide className="py-10">
           <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
             <div>
-              <Logo />
-              <p className="mt-3 max-w-xs text-sm leading-relaxed text-graphite-soft">
+              <Logo light />
+              <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/55">
                 High-purity research peptides for qualified laboratories. Clear specs, careful
                 packaging, research use only.
               </p>
             </div>
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-graphite-soft">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/40">
                 Shop
               </h4>
-              <Link className="mb-2 block text-sm text-ink hover:text-teal-deep" to="/catalog">
-                Store
-              </Link>
-              <Link className="mb-2 block text-sm text-ink hover:text-teal-deep" to="/verify">
-                Test & verify
-              </Link>
-              <Link className="mb-2 block text-sm text-ink hover:text-teal-deep" to="/cart">
-                Cart
-              </Link>
-              <Link className="mb-2 block text-sm text-ink hover:text-teal-deep" to="/account">
-                Account
-              </Link>
+              {[
+                ['/catalog', 'Store'],
+                ['/verify', 'Test & verify'],
+                ['/cart', 'Cart'],
+                ['/account', 'Account'],
+              ].map(([to, label]) => (
+                <Link
+                  key={to}
+                  className="mb-2 block text-sm text-white/75 transition hover:text-white"
+                  to={to}
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-graphite-soft">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/40">
                 Company
               </h4>
-              <Link className="mb-2 block text-sm text-ink hover:text-teal-deep" to="/contact">
+              <Link className="mb-2 block text-sm text-white/75 transition hover:text-white" to="/contact">
                 Contact
               </Link>
             </div>
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-graphite-soft">
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-white/40">
                 Legal
               </h4>
-              <p className="text-sm text-graphite-soft">
+              <p className="text-sm text-white/55">
                 For laboratory research only. Not for human or veterinary use.
               </p>
             </div>
           </div>
-          <div className="mt-10 flex flex-wrap justify-between gap-2 border-t border-paper-line pt-6 text-xs text-graphite-soft">
+          <div className="mt-10 flex flex-wrap justify-between gap-2 border-t border-white/10 pt-6 text-xs text-white/40">
             <span>© {new Date().getFullYear()} Vantril Research</span>
             <span>Research use only · Not for human consumption</span>
           </div>

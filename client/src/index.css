@@ -31,7 +31,7 @@
   }
 
   body {
-    @apply m-0 min-h-screen bg-white font-sans text-graphite antialiased;
+    @apply m-0 min-h-screen bg-ink font-sans text-white antialiased;
   }
 
   h1,
@@ -40,7 +40,7 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
-    @apply text-ink;
+    @apply text-white;
   }
 
   a {

@@ -22,7 +22,7 @@ export default function ProductPhoto({
 
   return (
     <div
-      className={`relative w-full overflow-hidden bg-paper-dim ${height} ${className}`}
+      className={`relative w-full overflow-hidden bg-ink-soft ${height} ${className}`}
     >
       <img
         src={src}

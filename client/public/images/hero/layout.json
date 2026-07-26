@@ -3,52 +3,31 @@
   "imgH": 720,
   "products": {
     "vial": {
-      "left": 31.172,
-      "top": 39.444,
-      "width": 11.484,
-      "height": 37.639,
       "box": [
-        399,
-        284,
-        546,
-        555
+        400,
+        250,
+        560,
+        575
       ],
-      "id": "injectable",
-      "label": "Injectable",
-      "note": "Lyophilized research vials",
-      "image": "/images/hero/cutout-vial.png?v=3"
+      "id": "injectable"
     },
     "nasal": {
-      "left": 43.047,
-      "top": 18.056,
-      "width": 12.422,
-      "height": 60.417,
       "box": [
-        551,
-        130,
-        710,
-        565
+        545,
+        140,
+        705,
+        569
       ],
-      "id": "nasal",
-      "label": "Nasal",
-      "note": "Research spray delivery",
-      "image": "/images/hero/cutout-nasal.png?v=3"
+      "id": "nasal"
     },
     "topical": {
-      "left": 57.188,
-      "top": 22.917,
-      "width": 10.781,
-      "height": 55.556,
       "box": [
-        732,
-        165,
-        870,
-        565
+        685,
+        170,
+        860,
+        569
       ],
-      "id": "topical",
-      "label": "Topical",
-      "note": "Serum \u00b7 topical research",
-      "image": "/images/hero/cutout-topical.png?v=3"
+      "id": "topical"
     }
   }
 }
